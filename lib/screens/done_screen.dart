@@ -31,7 +31,7 @@ class _DoneScreenState extends State<DoneScreen> {
         Observer(
           builder: (_) => Flexible(
             child: ListView.builder(
-              itemCount: widget.controller.doneItemList.length,
+              itemCount: widget.controller.doneItemListLength,
               itemBuilder: (context, index) {
                 final item = widget.controller.doneItemList[index];
 

@@ -9,6 +9,21 @@ part of 'home_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeController on _HomeControllerBase, Store {
+  Computed<int>? _$toDoItemListLengthComputed;
+
+  @override
+  int get toDoItemListLength => (_$toDoItemListLengthComputed ??= Computed<int>(
+          () => super.toDoItemListLength,
+          name: '_HomeControllerBase.toDoItemListLength'))
+      .value;
+  Computed<int>? _$doneItemListLengthComputed;
+
+  @override
+  int get doneItemListLength => (_$doneItemListLengthComputed ??= Computed<int>(
+          () => super.doneItemListLength,
+          name: '_HomeControllerBase.doneItemListLength'))
+      .value;
+
   final _$toDoItemListAtom = Atom(name: '_HomeControllerBase.toDoItemList');
 
   @override
@@ -128,7 +143,9 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return '''
 toDoItemList: ${toDoItemList},
 doneItemList: ${doneItemList},
-selectedIndex: ${selectedIndex}
+selectedIndex: ${selectedIndex},
+toDoItemListLength: ${toDoItemListLength},
+doneItemListLength: ${doneItemListLength}
     ''';
   }
 }

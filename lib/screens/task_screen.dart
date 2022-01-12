@@ -68,7 +68,7 @@ class _TaskScreenState extends State<TaskScreen> {
           Observer(
             builder: (_) => Flexible(
               child: ListView.builder(
-                itemCount: widget.controller.toDoItemList.length,
+                itemCount: widget.controller.toDoItemListLength,
                 itemBuilder: (context, index) {
                   final item = widget.controller.toDoItemList[index];
                   return ToDoItemListTile(

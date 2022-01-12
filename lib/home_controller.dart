@@ -16,6 +16,12 @@ abstract class _HomeControllerBase with Store {
   @observable
   int selectedIndex = 0;
 
+  @computed
+  int get toDoItemListLength => toDoItemList.length;
+
+  @computed
+  int get doneItemListLength => doneItemList.length;
+
   @action
   void onRemoveItem(ToDoItem item) {
     toDoItemList.remove(item);
