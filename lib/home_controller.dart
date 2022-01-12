@@ -1,46 +1,56 @@
-import 'gerencia_de_estado.dart';
+import 'package:mobx/mobx.dart';
+
 import 'shared/models/todo_item.dart';
 
-class HomeController extends GerenciaDeEstado<String> {
-  final _toDoItemList = <ToDoItem>[];
-  final _doneItemList = <ToDoItem>[];
+part 'home_controller.g.dart';
 
-  HomeController() : super(initialState: "");
+class HomeController = _HomeControllerBase with _$HomeController;
 
-  List<ToDoItem> get toDoItemList => _toDoItemList;
-  List<ToDoItem> get doneItemList => _doneItemList;
+abstract class _HomeControllerBase with Store {
+  @observable
+  ObservableList<ToDoItem> toDoItemList = ObservableList<ToDoItem>();
 
+  @observable
+  ObservableList<ToDoItem> doneItemList = ObservableList<ToDoItem>();
+
+  @observable
+  int selectedIndex = 0;
+
+  @action
   void onRemoveItem(ToDoItem item) {
-    _toDoItemList.remove(item);
-    setState(state);
+    toDoItemList.remove(item);
   }
 
+  @action
   void onCompleteItem(ToDoItem item) {
-    _toDoItemList.remove(item);
-    _doneItemList.add(
+    toDoItemList.remove(item);
+    doneItemList.add(
       ToDoItem(
         title: item.title,
         isDone: true,
       ),
     );
-    setState(state);
   }
 
+  @action
   void onAddItem(ToDoItem item) {
-    _toDoItemList.add(item);
-    setState(state);
+    toDoItemList.add(item);
   }
 
+  @action
   void onResetItem(ToDoItem item) {
-    _doneItemList.remove(item);
-    _toDoItemList.add(
+    doneItemList.remove(item);
+    toDoItemList.add(
       ToDoItem(title: item.title),
     );
-    setState(state);
   }
 
+  @action
   void onRemoveDoneItem(ToDoItem item) {
-    _doneItemList.remove(item);
-    setState(state);
+    doneItemList.remove(item);
   }
+
+  @action
+  // ignore: use_setters_to_change_properties
+  void setSelectedIndex(int index) => selectedIndex = index;
 }

@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
+import '../home_controller.dart';
 import '../shared/models/todo_item.dart';
 import 'components/todo_item_list_tile.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({
     Key? key,
-    required this.itemList,
-    required this.onAddItem,
-    required this.onCompleteItem,
-    required this.onRemoveItem,
+    required this.controller,
   }) : super(key: key);
 
-  final List<ToDoItem> itemList;
-  final ValueChanged<ToDoItem> onCompleteItem;
-  final ValueChanged<String> onAddItem;
-  final ValueChanged<ToDoItem> onRemoveItem;
+  final HomeController controller;
 
   @override
   _TaskScreenState createState() => _TaskScreenState();
@@ -24,6 +20,10 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   final _formKey = GlobalKey<FormState>();
   final _toDoItemTitleEditingController = TextEditingController();
+
+  void onAddItem(String itemTitle) {
+    widget.controller.onAddItem(ToDoItem(title: itemTitle));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _TaskScreenState extends State<TaskScreen> {
                   ),
                   onPressed: () {
                     if (_toDoItemTitleEditingController.text.isNotEmpty) {
-                      widget.onAddItem(_toDoItemTitleEditingController.text);
+                      onAddItem(_toDoItemTitleEditingController.text);
 
                       _toDoItemTitleEditingController.clear();
                     }
@@ -65,17 +65,19 @@ class _TaskScreenState extends State<TaskScreen> {
               ],
             ),
           ),
-          Flexible(
-            child: ListView.builder(
-              itemCount: widget.itemList.length,
-              itemBuilder: (context, index) {
-                final item = widget.itemList[index];
-                return ToDoItemListTile(
-                  item: item,
-                  onRemoveItem: () => widget.onRemoveItem(item),
-                  onChangeItem: () => widget.onCompleteItem(item),
-                );
-              },
+          Observer(
+            builder: (_) => Flexible(
+              child: ListView.builder(
+                itemCount: widget.controller.toDoItemList.length,
+                itemBuilder: (context, index) {
+                  final item = widget.controller.toDoItemList[index];
+                  return ToDoItemListTile(
+                    item: item,
+                    onRemoveItem: () => widget.controller.onRemoveItem(item),
+                    onChangeItem: () => widget.controller.onCompleteItem(item),
+                  );
+                },
+              ),
             ),
           ),
         ],

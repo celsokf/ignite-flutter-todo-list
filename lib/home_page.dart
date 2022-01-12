@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 
-import 'builder_widget.dart';
 import 'home_controller.dart';
 import 'screens/done_screen.dart';
 import 'screens/task_screen.dart';
-import 'shared/models/todo_item.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,26 +18,16 @@ class _HomePageState extends State<HomePage> {
     keepPage: true,
   );
 
-  var _selectedIndex = 0;
-
-  void onAddItem(String itemTitle) {
-    controller.onAddItem(ToDoItem(title: itemTitle));
-  }
-
-  void onResetItem(ToDoItem item) {
-    controller.onResetItem(item);
-  }
-
-  void onRemoveToDoItem(ToDoItem item) {
-    controller.onRemoveItem(item);
-  }
-
-  void onRemoveDoneItem(ToDoItem item) {
-    controller.onRemoveDoneItem(item);
-  }
-
-  void onCompleteItem(ToDoItem item) {
-    controller.onCompleteItem(item);
+  @override
+  void initState() {
+    super.initState();
+    autorun((_) {
+      _pageViewController.animateToPage(
+        controller.selectedIndex,
+        duration: Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -54,38 +43,21 @@ class _HomePageState extends State<HomePage> {
       body: PageView(
         controller: _pageViewController,
         children: <Widget>[
-          BuilderWidget(
+          TaskScreen(
             controller: controller,
-            builder: (context, _) => TaskScreen(
-              itemList: controller.toDoItemList,
-              onAddItem: onAddItem,
-              onCompleteItem: onCompleteItem,
-              onRemoveItem: onRemoveToDoItem,
-            ),
           ),
-          BuilderWidget(
+          DoneScreen(
             controller: controller,
-            builder: (context, _) => DoneScreen(
-              itemList: controller.doneItemList,
-              onRemoveItem: onRemoveDoneItem,
-              onResetItem: onResetItem,
-            ),
           ),
         ],
         onPageChanged: (index) {
-          setState(() => _selectedIndex = index);
+          controller.selectedIndex = index;
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
+        currentIndex: controller.selectedIndex,
         onTap: (index) {
-          setState(() => _selectedIndex = index);
-
-          _pageViewController.animateToPage(
-            _selectedIndex,
-            duration: Duration(milliseconds: 350),
-            curve: Curves.easeOut,
-          );
+          controller.selectedIndex = index;
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
